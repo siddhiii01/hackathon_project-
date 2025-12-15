@@ -1,0 +1,15 @@
+[
+  {
+    "id": "basic-tutorial",
+    "config": {
+      "src\\petstore\\state-audit-cron.step.ts": {
+        "x": 226,
+        "y": 0
+      },
+      "src\\petstore\\notification.step.ts": {
+        "x": 576,
+        "y": 141
+      }
+    }
+  }
+]
