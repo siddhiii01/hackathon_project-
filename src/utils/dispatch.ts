@@ -1,29 +1,32 @@
-import { Location, Emergency } from '../../types/models';
+import { Location, Emergency, Unit } from '../../types/models';
 import { calculateRadialDistanceBetweenCoordinates } from './distance';
 
-export interface DispatchUnit {
-    id: string,
-    type: string,
-    location: Location,
-    availabl: boolean
-}
 
-export interface EmergencyUnit {
-    location: Location,
-    type: string
-}
+
+const EMERGENCY_UNIT_MAP = {
+  medical: 'ambulance',
+  fire: 'fire_truck',
+  police: 'police_car'
+} as const;
+
+
+
 
 //given one emergency and many units pick the closet units
-const findNearestAvailableUnit  = (
+export const findNearestAvailableUnit  = (
     emergency: Emergency,
-    units: DispatchUnit): DispatchUnit | null => {
+    units: Unit[]): Unit | null => {
         
-    let shortestDistance = Number.MAX_SAFE_INTEGER
-    let nearestUnit: DispatchUnit | null = null;
+    const requiredUnitType = EMERGENCY_UNIT_MAP[emergency.type];
+
+    let shortestDistance = Infinity
+    let nearestUnit: Unit | null = null;
     
 
     for(const unit of units){
-        if(!unit.available) continue;
+        if(unit.status !== "available") continue;
+        if (unit.type !== requiredUnitType) continue;
+
         const distance = calculateRadialDistanceBetweenCoordinates(
             emergency.location, unit.location)
 
