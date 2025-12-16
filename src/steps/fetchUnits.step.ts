@@ -9,7 +9,7 @@ export const config: ApiRouteConfig = {
   emits: []
 }
 
-export const handler: Handlers['InitUnits'] = async (_req, { state, logger }) => {
+export const handler = async (_req:any, { state, logger }:any) => {
   const unitsMap = await state.getGroup('units');
   if (unitsMap.length === 0) {
     await SeedUnits(state);
@@ -17,3 +17,4 @@ export const handler: Handlers['InitUnits'] = async (_req, { state, logger }) =>
   }
   return { status: 200, body: { success: true, unitsMap } };
 };
+
