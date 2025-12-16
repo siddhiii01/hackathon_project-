@@ -12,6 +12,7 @@ declare module 'motia' {
   }
 
   interface Handlers {
+    'FetchUnits': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'Emergency': ApiRouteHandler<Record<string, unknown>, unknown, never>
   }
     
