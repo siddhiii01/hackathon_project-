@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react"
 import {useForm, type SubmitHandler} from "react-hook-form"
 import type {EmergencyFormData} from '../types/emergency'
 import axios from "axios"
+import MapView from "./components/MapView"
 
 export const Emergency: React.FC = () => {
   const {
@@ -38,7 +39,6 @@ export const Emergency: React.FC = () => {
     }
   },[])
 
-  
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -89,10 +89,14 @@ export const Emergency: React.FC = () => {
                     readOnly
                     className="w-full rounded-lg border border-gray-300 p-3 bg-gray-100"
                   />
-
+                  
                 </div>
             </div>
-          <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded">Submit Emergency</button>
+
+            <div style={{ height: "300px", width: "400px" }}>
+              <MapView  lat={watch("location.lat")} lng={watch("location.lng")}/>
+            </div>
+          <button type="submit" className="bg-blue-500 hover:bg-blue-700 mt-2 text-white font-bold py-2 px-4 border border-blue-700 rounded">Submit Emergency</button>
           </div>
         </div>
 
