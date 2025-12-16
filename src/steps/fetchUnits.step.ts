@@ -16,5 +16,7 @@ export const handler = async (_req:any, { state, logger }:any) => {
     logger.info('Units seeded into Motia state');
   }
   return { status: 200, body: { success: true, unitsMap } };
+
+  
 };
 
