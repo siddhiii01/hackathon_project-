@@ -2,11 +2,9 @@ import { ApiRouteConfig, Handlers } from 'motia'
 import { z } from 'zod'
 import {findNearestAvailableUnit} from "../utils/dispatch"
 import { Emergency } from '../../types/models';
-import { UNIT_STORE } from '../services/unitStore';
 
 
 
-console.log("UNIT_STORE",UNIT_STORE )
 const emergencySchema = z.object({
   type: z.enum(['medical', 'fire', 'police']),
   location: z.object({lat:z.number(), lng:z.number()}),
@@ -25,8 +23,12 @@ export const config: ApiRouteConfig = {
 }
  
 export const handler = async (req:any, { logger, state }: any) => {
-  const units = Array.from(UNIT_STORE.values())
-  console.log("units ", units)
+
+  // Fetch all units from Motia state
+  const unitsMap = await state.getGroup('units') ; // Returns a Map<string, Unit>
+  
+
+
   const data = emergencySchema.parse(req.body)
   
   const emergency: Emergency = {
@@ -40,7 +42,7 @@ export const handler = async (req:any, { logger, state }: any) => {
     assignedUnitId: null
   } 
 
-  const nearestUnit = findNearestAvailableUnit(emergency, units)
+  const nearestUnit = findNearestAvailableUnit(emergency, unitsMap)
 
     if (nearestUnit) {
       nearestUnit.status = "dispatched";
@@ -49,7 +51,7 @@ export const handler = async (req:any, { logger, state }: any) => {
       emergency.status = "dispatched";
       emergency.assignedUnitId = nearestUnit.id;
 
-      UNIT_STORE.set(nearestUnit.id, nearestUnit);
+      await state.set('units', nearestUnit.id, nearestUnit);
       
     }
 
