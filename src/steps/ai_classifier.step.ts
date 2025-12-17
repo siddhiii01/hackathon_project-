@@ -4,6 +4,7 @@ import { Severity } from '../../types/models';
 export const config = {
   name: 'ai-classifier',
   type: 'event',
+
   subscribes: ['pending_classification'], 
   emits:['unit.assigning.requested'] 
 }
@@ -43,9 +44,11 @@ const buildPrompt = ( description: string, guessedType?: string): string => {
 };
 
 //Main handler – receives input, calls Gemini, parses, fallbacks
+
 export const handler= async (
   input: { description: string; userProvidedType?: string; emergencyId: string},
   { logger, emit,state }: any) => {
+
 
   const { description, userProvidedType, emergencyId } = input
 
@@ -81,6 +84,7 @@ export const handler= async (
       throw new Error("No JSON found in response");
     }
     classification = JSON.parse(jsonMatch[0]);
+
     logger.info("AI classification successful", { classification });
     } catch(error:any){
       logger.error("AI classification failed using fallback value", { error: error.message });

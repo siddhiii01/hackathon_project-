@@ -19,6 +19,7 @@ export interface Emergency  {
     location: Location,
     severity?: Severity, //how sever is the emergency 
     description: string,
+
     status: EmergencyStatus, //what is the status
     createdAt: string,
     assignedUnitId: string[],
@@ -26,6 +27,7 @@ export interface Emergency  {
     requiredUnits: number,
     specialEquipment? : string[],
     requiredUnitType?: UnitType //which unit is most suitable
+
 }
 
 //which are the units are assigned
