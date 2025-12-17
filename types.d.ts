@@ -13,12 +13,14 @@ declare module 'motia' {
 
   interface Handlers {
     'UnitAssigning': EventHandler<never, { topic: 'emergency.dispatched'; data: never }>
+    'ResetAllUnits': ApiRouteHandler<Record<string, unknown>, unknown, never>
+    'EnqueuedPendingEmergencies': EventHandler<never, never>
     'GetEmergency': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'InitUnits': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'EmergencyResolved': EventHandler<never, never>
     'EmergencyReached': EventHandler<never, { topic: 'emergency.active'; data: never }>
     'EmergencyUpdate': EventHandler<never, { topic: 'emergency.dispatch'; data: never }>
-    'Emergency': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'emergency.created'; data: never }>
+    'Emergency': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'emergency.created'; data: never } | { topic: 'emergencies.pending.enqueued'; data: never }>
     'EmergencyDispatch': EventHandler<never, never>
     'ai-classifier': EventHandler<never, { topic: 'emergency.updated'; data: never }>
   }

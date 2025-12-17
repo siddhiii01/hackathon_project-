@@ -1,11 +1,12 @@
 import { ApiRouteConfig } from 'motia'
  
+// why this file is used??
 export const config = {
   type: 'event',
   name: 'EmergencyDispatch',
-  subscribes: ['emergency.dispatch'],
+  subscribes: ['emergency.dispatching'],
   emits: [],
-  flows: ['emergency-dispatch'],
+  //flows: ['emergency-dispatch'],
 }
 
 export const handler= async (input :{emergencyId: string}, { logger, emit, state }: any) => {

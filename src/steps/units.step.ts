@@ -6,7 +6,7 @@ import {findNearestAvailableUnit} from "../utils/dispatch";
 export const config = {
   name: 'UnitAssigning',
   type: 'event',
-  subscribes: ['emergency.created'],
+  subscribes: ['emergency.dispatch'],
   emits:['emergency.dispatched']
 }
 

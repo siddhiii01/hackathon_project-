@@ -15,17 +15,19 @@ export const config = {
 
 
 // Prompt builder helper – strict for JSON output
-const buildPrompt = ( description: string, guessedType?: string, guessedSeverity?: number): string => {
-  const guessInfo = guessedType || guessedSeverity
-    ? `User guesses: type="${guessedType ?? "unknown"}", severity=${guessedSeverity ?? "unknown"} (you can override if needed).`
-    : "";
+const buildPrompt = ( description: string, guessedType?: string): string => {
+  // const guessInfo = guessedType || guessedSeverity
+  //   ? `User guesses: type="${guessedType ?? "unknown"}", severity=${guessedSeverity ?? "unknown"} (you can override if needed).`
+  //   : "";
 
   return `
     You are an expert emergency dispatcher AI. Analyze the description and classify accurately.
 
-    Description: "${description}"
+    Analyze the emergency description and determine:
+    - emergency type
+    - severity on a scale of 1 (low) to 10 (life-threatening)
 
-    ${guessInfo}
+    Description: "${description}"
 
     Respond with ONLY valid JSON (no extra text, no markdown):
 
@@ -46,11 +48,11 @@ const buildPrompt = ( description: string, guessedType?: string, guessedSeverity
 //Main handler – receives input, calls Gemini, parses, fallbacks
 export const handler= async (input: { description: string;
     userProvidedType?: string;
-    userProvidedSeverity?: number,
     emergencyId: string
    },{ logger, emit }: any) => {
+    let classification;
   try{
-    const { description, userProvidedType, userProvidedSeverity, emergencyId } = input
+    const { description, userProvidedType, emergencyId } = input
     console.log('ai-classifier: ', input);
     
     
@@ -59,7 +61,7 @@ export const handler= async (input: { description: string;
     }
 
     // Build strict prompt
-    const prompt = buildPrompt(description, userProvidedType, userProvidedSeverity);
+    const prompt = buildPrompt(description, userProvidedType);
 
     // Initialize Gemini client (key from env)
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
@@ -75,24 +77,15 @@ export const handler= async (input: { description: string;
       throw new Error("No JSON found in response");
     }
 
-    const classification = JSON.parse(jsonMatch[0]);
-
-    await emit({
-      topic: 'emergency.updated',
-      data: { 
-        classification, 
-        emergencyId
-      }
-    })
+    classification = JSON.parse(jsonMatch[0]);
 
     logger.info("AI classification successful", { classification });
 
-    return classification;
   } catch(error:any){
     logger.error("AI classification failed", { error: error.message });
 
     // Safe fallback – never block emergency creation
-    return {
+    classification = {
       classifiedType: input.userProvidedType || "unknown",
       severity: 5,
       requiredUnits: 1,
@@ -103,5 +96,14 @@ export const handler= async (input: { description: string;
     };
 
   }
+  
+  await emit({
+      topic: 'emergency.updated',
+      data: { 
+        classification, 
+        emergencyId: input.emergencyId
+      }
+    })
 
+  return classification;
 }

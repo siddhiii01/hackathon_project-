@@ -5,7 +5,7 @@ export const config = {
   type: 'event',
   subscribes: ['emergency.updated'],
   emits: ['emergency.dispatch'],
-  flows: ['emergency-created']
+  // flows: ['emergency-created']
 };
  
 export const handler = async (input:any, { logger,state,emit }:any) => {
@@ -23,7 +23,6 @@ export const handler = async (input:any, { logger,state,emit }:any) => {
         logger.error("Emergency not found:", emergencyId)
         return
     }
-
     
     emergency.type = classifiedType     // override user guess
     emergency.severity = severity

@@ -2,6 +2,7 @@ import { ApiRouteConfig, Handlers } from 'motia'
 import { z } from 'zod'
 
 import { Emergency } from '../../types/models';
+import { getPendingEmergenciesInPriorityOrder } from '../utils/queue';
 
 const emergencySchema = z.object({
   type: z.enum(['medical', 'fire', 'police']),
@@ -9,13 +10,15 @@ const emergencySchema = z.object({
   // severity: z.number().min(1).max(10),
   description: z.string()
 })
+
+// flow -> emergency -> ai_clasfier -> update -> unit -> reached -> resolved
  
 export const config: ApiRouteConfig = {
   name: 'Emergency',
   type: 'api',
   path: '/emergency',
   method: 'POST',
-  emits: ['emergency.created'] 
+  emits: ['emergency.created',"emergencies.pending.enqueued"] 
   // flows: ['emergency-created']  jab multiple emits karna hoga to flow use karte h
 }
  
@@ -68,7 +71,23 @@ export const handler = async (req:any, { logger, state,emit }: any) => {
       }
     })
 
-    
+ setInterval(async () => {
+
+  const pending = await getPendingEmergenciesInPriorityOrder(state);
+
+  if (pending.length === 0) return; // nothing to enqueue
+
+  await emit({
+    topic: "emergencies.pending.enqueued",
+    data: {
+      enqueuedAt: Date.now(),
+      pending,     // full array of emergency objects
+    }
+  });
+
+}, 30_000); // 30 sec
+
+
   return {
     status: 201,
     message: "data",
