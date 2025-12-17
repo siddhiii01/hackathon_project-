@@ -19,6 +19,9 @@ export interface Emergency  {
     status: EmergencyStatus,
     createdAt: Date,
     assignedUnitId: string | null;
+    // requiredEquipment: string[];
+    aireasoning: string | null;
+    requiredUnits: number
 }
 
 //which are the units are assigned
@@ -28,4 +31,5 @@ export interface Unit {
     location: Location,
     status:  UnitStatus,
     currentEmergencyId: string | null;
+    averageSpeedKmph: number;
 }
