@@ -27,6 +27,8 @@ export const handler= async (input :{emergencyId: string}, { logger, emit, state
         emergencyLocation,
         type,
        
-    })
+    });
+
+    
 
 }

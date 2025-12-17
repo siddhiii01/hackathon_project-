@@ -17,7 +17,8 @@ export const config: ApiRouteConfig = {
   type: 'api',
   path: '/emergency',
   method: 'POST',
-  emits: ['pending_classification'] 
+  emits: ['ai-classifier'], 
+  flows: ['emergency-created']
 }
  
 export const handler = async (req:any, { logger, state,emit }: any) => {
@@ -52,7 +53,6 @@ export const handler = async (req:any, { logger, state,emit }: any) => {
     requiredUnits: 1 ,
   } 
 
-
   //Save to state 
   try {
     await state.set('emergencies', emergency.id, emergency);
@@ -66,8 +66,7 @@ export const handler = async (req:any, { logger, state,emit }: any) => {
 
   logger.info('Emergency created with pending classification', {
     emergency: emergency,
-  });
-   
+  });   
  try {
     await emit({
       topic: 'pending_classification',
@@ -83,7 +82,7 @@ export const handler = async (req:any, { logger, state,emit }: any) => {
       status: 500,
       body: { success: false, message: 'Failed to emit classification event' }
     }
- }  
+ }
   return {
     status: 201,
     message: "Emergency Created and Emitted",

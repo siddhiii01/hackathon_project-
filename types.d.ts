@@ -12,6 +12,7 @@ declare module 'motia' {
   }
 
   interface Handlers {
+
     'UnitDispatched': EventHandler<never, { topic: 'emergency.active'; data: never }>
     'UnitAvailableHandler': EventHandler<never, never>
     'FetchUnits': ApiRouteHandler<Record<string, unknown>, unknown, never>
@@ -30,6 +31,7 @@ declare module 'motia' {
     'EmergencyUpdate': EventHandler<never, { topic: 'emergency.dispatch'; data: never }>
     'Emergency': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'emergency.created'; data: never } | { topic: 'ai-classifier'; data: never }>
     'EmergencyDispatch': EventHandler<never, never>
+
 
   }
     

@@ -1,3 +1,4 @@
+
 import { Emergency } from "types/models"
 export const getPendingEmergenciesInPriorityOrder = async (state:any):Promise<Emergency[]> => {
 
@@ -21,5 +22,3 @@ export const getPendingEmergenciesInPriorityOrder = async (state:any):Promise<Em
 
 
 }
-
-//call this function with state para in emergency
