@@ -18,6 +18,5 @@ export const handler = async (_req:any, { state, logger }:any) => {
   }
   return { status: 200, body: { success: true, unitsMap } };
 
-  
 };
 

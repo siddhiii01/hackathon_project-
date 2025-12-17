@@ -17,7 +17,8 @@ export const config: ApiRouteConfig = {
   type: 'api',
   path: '/emergency',
   method: 'POST',
-  emits: ['emergency.created'],
+  emits: ['emergency.created', 'ai-classifier'],
+  flows: ['emergency-created']
 }
  
 export const handler = async (req:any, { logger, state,emit }: any) => {
@@ -40,7 +41,9 @@ export const handler = async (req:any, { logger, state,emit }: any) => {
     description: description,
     status: 'pending',
     createdAt: new Date(),
-    assignedUnitId: null
+    assignedUnitId: null,
+    aireasoning: null,
+    requiredUnits: 1
   } 
 
   // ALWAYS persist emergency
@@ -54,6 +57,16 @@ export const handler = async (req:any, { logger, state,emit }: any) => {
     await emit ({
       topic: 'emergency.created',
       data: {emergencyId: emergency.id} //passing emergencyId to event subscriber
+    });
+
+    await emit({
+      topic: 'ai-classifier',
+      data: {
+        emergencyId: emergency.id,
+        description: emergency.description,
+        userProvidedType: emergency.type,
+        userProvidedSeverity: emergency.severity
+      }
     })
 
     

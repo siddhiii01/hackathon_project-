@@ -11,13 +11,38 @@ declare module 'motia' {
     
   }
 
+  // interface Handlers {
+  //   'UnitAssigning': EventHandler<never, { topic: 'emergency.dispatched'; data: never }>
+  //   'GetEmergency': ApiRouteHandler<Record<string, unknown>, unknown, never>
+  //   'InitUnits': ApiRouteHandler<Record<string, unknown>, unknown, never>
+
+  //   'EmergencyResolved': EventHandler<never, never>
+  //   'EmergencyReached': EventHandler<never, { topic: 'emergency.active'; data: never }>
+  //   'Emergency': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'emergency.created'; data: never }>
+
+  //   'EmergencyUpdate': EventHandler<never, { topic: 'emergency.dispatch'; data: never }>
+  //   'Emergency': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'emergency.created'; data: never } | { topic: 'ai-classifier'; data: never }>
+  //   'ai-classifier': EventHandler<never, { topic: 'emergency.updated'; data: never }>
+  //   'EmergencyDispatch': EventHandler<never, never>
+
+  // }
+
   interface Handlers {
-    'UnitAssigning': EventHandler<never, { topic: 'emergency.dispatched'; data: never }>
-    'GetEmergency': ApiRouteHandler<Record<string, unknown>, unknown, never>
-    'InitUnits': ApiRouteHandler<Record<string, unknown>, unknown, never>
-    'EmergencyResolved': EventHandler<never, never>
-    'EmergencyReached': EventHandler<never, { topic: 'emergency.active'; data: never }>
-    'Emergency': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'emergency.created'; data: never }>
-  }
+  'UnitAssigning': EventHandler<never, { topic: 'emergency.dispatched'; data: never }>;
+  'GetEmergency': ApiRouteHandler<Record<string, unknown>, unknown, unknown, never>;
+  'InitUnits': ApiRouteHandler<Record<string, unknown>, unknown, unknown, never>;
+
+  'EmergencyResolved': EventHandler<never, never>;
+  'EmergencyReached': EventHandler<never, { topic: 'emergency.active'; data: never }>;
+  'Emergency': ApiRouteHandler<
+    Record<string, unknown>,
+    unknown,
+    { topic: 'emergency.created'; data: never } | { topic: 'ai-classifier'; data: never }
+  >;
+  'ai-classifier': EventHandler<never, { topic: 'emergency.updated'; data: never }>;
+  'EmergencyUpdate': EventHandler<never, { topic: 'emergency.dispatch'; data: never }>;
+  'EmergencyDispatch': EventHandler<never, never>;
+}
+
     
 }
