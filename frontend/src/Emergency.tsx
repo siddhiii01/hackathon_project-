@@ -3,6 +3,7 @@ import {useForm, type SubmitHandler} from "react-hook-form"
 import type {EmergencyFormData} from '../types/emergency'
 import axios from "axios"
 import MapView from "./components/MapView"
+import { useNavigate } from "react-router-dom"
 
 export const Emergency: React.FC = () => {
   const {
@@ -13,10 +14,14 @@ export const Emergency: React.FC = () => {
     formState: {errors}
   } = useForm<EmergencyFormData>();
 
+  const navigate = useNavigate();
+
   const onSubmit:SubmitHandler<EmergencyFormData> = async(data:EmergencyFormData) => {
-    console.log(data);
     const res = await axios.post("http://localhost:3000/emergency",data);
-    console.log(res.data);
+
+    // user need to see the status whether they r available or not
+    const id = res.data.emergencyId;
+    navigate(`/emergency/${id}`);
   }
 
   //const [loc,setLoc] = useState({});

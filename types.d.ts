@@ -12,8 +12,9 @@ declare module 'motia' {
   }
 
   interface Handlers {
-    'InitUnits': ApiRouteHandler<Record<string, unknown>, unknown, never>
-    'Emergency': ApiRouteHandler<Record<string, unknown>, unknown, never>
+    'UnitAssigning': EventHandler<never, never>
+    'GetEmergency': ApiRouteHandler<Record<string, unknown>, unknown, never>
+    'Emergency': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'emergency.created'; data: never }>
   }
     
 }
