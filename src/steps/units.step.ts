@@ -7,7 +7,7 @@ export const config = {
   name: 'UnitAssigning',
   type: 'event',
   subscribes: ['emergency.created'],
-  emits:[]
+  emits:['emergency.dispatched']
 }
 
 // Handler - runs in background automatically
@@ -34,7 +34,6 @@ export const handler= async (input: { emergencyId: string },{ logger, state, emi
         //console.log(emergency, "in emergency.created subscirbe ervent");
 
         let unitsMap = await state.getGroup('units') //alll the units are loaded from state
-        console.log(unitsMap);
 
         if(unitsMap.length == 0) {            // if its empty we need to initialize all transport
             await SeedUnits(state);
@@ -56,6 +55,11 @@ export const handler= async (input: { emergencyId: string },{ logger, state, emi
             //update the states
             await state.set('units', nearestUnit?.id, nearestUnit)
             await state.set('emergencies', emergency.id, emergency)
+            
+            await emit({
+                topic: 'emergency.dispatched',
+                data: {emergencyId:emergency.id, unitId: nearestUnit.id}
+            })
 
             logger.info('Unit assigned', { emergencyId, unitId: nearestUnit.id });
         } else {

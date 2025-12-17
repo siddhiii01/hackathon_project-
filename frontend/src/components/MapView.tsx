@@ -20,7 +20,6 @@ function RecenterMap({ lat, lng }: { lat: number; lng: number }) {
 
 function MapView({lat,lng}: MapViewProps) {
   const position: [number, number] = lat && lng ? [lat, lng] : [51.505, -0.09];
-  console.log(lat,lng);
   return (
     <MapContainer center={position} zoom={13} scrollWheelZoom={false}  style={{ height: "100%", width: "100%" }}  >
       <TileLayer
