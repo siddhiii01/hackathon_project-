@@ -1,4 +1,5 @@
 import { ApiRouteConfig, Handlers } from 'motia';
+import { SeedUnits } from '../services/unitStore';
 import {findNearestAvailableUnit} from "../utils/dispatch";
 
 // Config - when it runs
@@ -12,8 +13,7 @@ export const config = {
 // Handler - runs in background automatically
 export const handler= async (input: { emergencyId: string },{ logger, state, emit }: any) => {
 
-    try{
-        console.log(input)
+    try{    
         logger.info('Received event data', { data: input });
         const { emergencyId } = input as { emergencyId: string };
         // logger.info({emergencyId})
@@ -33,12 +33,18 @@ export const handler= async (input: { emergencyId: string },{ logger, state, emi
 
         //console.log(emergency, "in emergency.created subscirbe ervent");
 
-        const unitsMap = await state.getGroup('units') //alll the units are loaded from state
+        let unitsMap = await state.getGroup('units') //alll the units are loaded from state
+        console.log(unitsMap);
+
+        if(unitsMap.length == 0) {            // if its empty we need to initialize all transport
+            await SeedUnits(state);
+            unitsMap = await state.getGroup('units') 
+        }
 
         const nearestUnit = findNearestAvailableUnit(emergency, unitsMap)
-
+        console.log("nearest unit",nearestUnit)
         //here we should also check if the if this nearestunit is assigned to another emergency or not
-        if (nearestUnit ||) {
+        if (nearestUnit) {
 
             
             nearestUnit.status = "dispatched";
