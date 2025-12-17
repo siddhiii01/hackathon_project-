@@ -24,6 +24,16 @@ export const handler = async(input: { emergencyId: string, unitId:string }, {sta
   await state.set('units',unit.id,unit);
   logger.info('Unit Dispatched reaching to Emergency in few minutes', { emergency, unit });
 
+  const assignments = await state.getGroup('assignments');
+  const assignment = Object.values(assignments).find(
+    (a: any) => a.emergencyId === emergencyId && a.unitId === unitId
+  );
+
+  if (assignment) {
+    assignment.arrivalTime = new Date();
+    await state.set('assignments', assignment.id, assignment);
+  }
+
   //New Event: Active Emergency -> Taking to Hospital 
   await emit({
     topic: "emergency.active",

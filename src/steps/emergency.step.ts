@@ -1,23 +1,23 @@
 import { ApiRouteConfig, Handlers } from 'motia'
 import { z } from 'zod'
 import { Emergency } from '../../types/models';
-// import { getPendingEmergenciesInPriorityOrder } from '../utils/queue';
+
 
 const emergencySchema = z.object({
   type: z.enum(['medical', 'fire', 'police']),
   location: z.object({lat:z.number(), lng:z.number()}),
   // severity: z.number().min(1).max(10),
   description: z.string()
-})
+}).strict()
 
 
  
 export const config: ApiRouteConfig = {
-  name: 'Emergency',
+  name: 'EmergencyCreated',
   type: 'api',
   path: '/emergency',
   method: 'POST',
-  emits: ['emergency.created'] 
+  emits: ['pending_classification'] 
 }
  
 export const handler = async (req:any, { logger, state,emit }: any) => {
@@ -29,36 +29,61 @@ export const handler = async (req:any, { logger, state,emit }: any) => {
       body: { success: false, message: 'Invalid data' }
     }
   }
-  const {type, location, description} = parsed.data
-  const emergency: Emergency = {
-    id: crypto.randomUUID(),
-    type: type,
-    location:location,
-    severity: null,    
-    description: description,
-    status: 'pending',
-    createdAt: new Date(),
-    assignedUnitId: null,
-    aireasoning: null,
-    requiredUnits: 1 , 
-  } 
-  //Save to state  
-  await state.set('emergencies', emergency.id,emergency);
-  logger.info('New Emergency Created with Pending State', {
-    emergencyId: emergency.id,
-    assignedUnit: emergency.assignedUnitId
-  });
+  const {type, location, description} = parsed.data;
+  const id= crypto.randomUUID();
 
-  //Emit: 'emergency.created'
-  await emit({
-    topic: 'emergency.created',
-    data: {
-      emergencyId: emergency.id,
-      description: emergency.description,
-      userProvidedType: emergency.type,
-      // userProvidedSeverity: emergency.severity 
+  const exists = await state.get('emergencies', id);
+  if (exists) {
+    logger.error(`ID collision detected for emergency ${id}`);
+    return {
+      status: 500,
+      body: { success: false, message: 'Internal server error' }
     }
+  }
+
+  const emergency: Emergency = {
+    id,
+    type: type,
+    location:location,    
+    description,
+    status: 'pending',
+    createdAt: new Date().toISOString(), 
+    assignedUnitId: [],
+    requiredUnits: 1 ,
+  } 
+
+
+  //Save to state 
+  try {
+    await state.set('emergencies', emergency.id, emergency);
+  } catch (err) {
+    logger.error("Failed to persist emergency", { err })
+    return {
+      status: 500,
+      body: { success: false, message: 'Failed to store emergency' }
+    }
+  }
+
+  logger.info('Emergency created with pending classification', {
+    emergency: emergency,
   });
+   
+ try {
+    await emit({
+      topic: 'pending_classification',
+      data: {
+        emergencyId: emergency.id,
+        description: emergency.description,
+        userProvidedType: emergency.type,
+      }
+    });
+  } catch(err){
+    logger.error("Failed to emit pending_classification", { err })
+    return {
+      status: 500,
+      body: { success: false, message: 'Failed to emit classification event' }
+    }
+ }  
   return {
     status: 201,
     message: "Emergency Created and Emitted",
