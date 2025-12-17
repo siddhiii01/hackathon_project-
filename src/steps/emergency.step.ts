@@ -1,9 +1,6 @@
 import { ApiRouteConfig, Handlers } from 'motia'
 import { z } from 'zod'
-
 import { Emergency } from '../../types/models';
-
-
 
 const emergencySchema = z.object({
   type: z.enum(['medical', 'fire', 'police']),
@@ -17,7 +14,7 @@ export const config: ApiRouteConfig = {
   type: 'api',
   path: '/emergency',
   method: 'POST',
-  emits: ['emergency.created', 'ai-classifier'],
+  emits: ['ai-classifier'], 
   flows: ['emergency-created']
 }
  
@@ -47,17 +44,17 @@ export const handler = async (req:any, { logger, state,emit }: any) => {
   } 
 
   // ALWAYS persist emergency
-  await state.set('emergencies', emergency.id, emergency)
+  await state.set('emergencies', emergency.id, emergency) 
 
   logger.info('emergency created', {
     emergencyId: emergency.id,
     assignedUnit: emergency.assignedUnitId
   });
 
-    await emit ({
-      topic: 'emergency.created',
-      data: {emergencyId: emergency.id} //passing emergencyId to event subscriber
-    });
+    // await emit ({
+    //   topic: 'emergency.created',
+    //   data: {emergencyId: emergency.id} //passing emergencyId to event subscriber
+    // });
 
     await emit({
       topic: 'ai-classifier',
@@ -68,6 +65,8 @@ export const handler = async (req:any, { logger, state,emit }: any) => {
         userProvidedSeverity: emergency.severity
       }
     })
+
+    
 
     
   return {
