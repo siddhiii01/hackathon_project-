@@ -1,29 +1,33 @@
+//Here the unit is travellling 
 
 export const config = {
-  name: 'EmergencyReached',
+  name: 'UnitDispatched',
   type: "event",
-  subscribes: ['emergency.dispatched'],
+  subscribes: ['unit.dispatched'], 
   emits: ['emergency.active']
 }
 
 export const handler = async(input: { emergencyId: string, unitId:string }, {state,logger,emit}:any) => {
   const {emergencyId,unitId} = input as {emergencyId:string,unitId:string}
+  await new Promise(r => setTimeout(r,15000)); //simulate travel -> 15 Seconds Travelling
   
-  await new Promise(r => setTimeout(r,8000)); // pause for 8 sec to simulate travel
-  
+  //Getting Emergencies and Units Through their Id from state
   const emergency = await state.get('emergencies',emergencyId);
   const unit = await state.get('units',unitId);
 
-  emergency.status='active';
-  unit.status='busy';
+  //updating their status here unit is reached to emergency location
+  emergency.status='active'; 
+  unit.status='busy'; 
 
+  //Save both to state
   await state.set('emergencies',emergency.id,emergency);
   await state.set('units',unit.id,unit);
-  
+  logger.info('Unit Dispatched reaching to Emergency in few minutes', { emergency, unit });
+
+  //New Event: Active Emergency -> Taking to Hospital 
   await emit({
     topic: "emergency.active",
     data: {emergencyId,unitId}
-  })
-
-  logger.info('Unit reached', { emergencyId, unitId });
+  });
+  
 }

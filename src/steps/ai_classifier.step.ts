@@ -1,31 +1,27 @@
-// We're creating a simple, working internal Step for AI classification (Step 3.1). 
-// This is not for unit assigning (remove that name/logic). 
-// It's a callable function-like Step that takes a description, 
-// calls Gemini to classify, parses JSON, and returns structured output with safe fallbacks.
-
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-// Config - when it runs
 export const config = {
   name: 'ai-classifier',
   type: 'event',
-  subscribes: ['ai-classifier'],
-  emits:['emergency.updated']
+  subscribes: ['emergency.created'], //this is when New Emergencies are created
+  emits:['emergency.updated'] //new updating the state of emergencies to AI reposne or fallback value
 }
 
 
 // Prompt builder helper – strict for JSON output
-const buildPrompt = ( description: string, guessedType?: string, guessedSeverity?: number): string => {
-  const guessInfo = guessedType || guessedSeverity
-    ? `User guesses: type="${guessedType ?? "unknown"}", severity=${guessedSeverity ?? "unknown"} (you can override if needed).`
-    : "";
+const buildPrompt = ( description: string, guessedType?: string): string => {
+  // const guessInfo = guessedType || guessedSeverity
+  //   ? `User guesses: type="${guessedType ?? "unknown"}", severity=${guessedSeverity ?? "unknown"} (you can override if needed).`
+  //   : "";
 
   return `
     You are an expert emergency dispatcher AI. Analyze the description and classify accurately.
 
-    Description: "${description}"
+    Analyze the emergency description and determine:
+    - emergency type
+    - severity on a scale of 1 (low) to 10 (life-threatening)
 
-    ${guessInfo}
+    Description: "${description}"
 
     Respond with ONLY valid JSON (no extra text, no markdown):
 
@@ -44,64 +40,55 @@ const buildPrompt = ( description: string, guessedType?: string, guessedSeverity
 };
 
 //Main handler – receives input, calls Gemini, parses, fallbacks
-export const handler= async (input: { description: string;
-    userProvidedType?: string;
-    userProvidedSeverity?: number,
-    emergencyId: string
-   },{ logger, emit }: any) => {
+export const handler= async (input: { description: string; userProvidedType?: string; emergencyId: string},{ logger, emit }: any) => {
+  let classification;
   try{
-    const { description, userProvidedType, userProvidedSeverity, emergencyId } = input
-    console.log('ai-classifier: ', input);
-    
-    
+    const { description, userProvidedType, emergencyId } = input
+    //console.log('ai-classifier: ', input);
     if (!description) {
       throw new Error("Description is required");
     }
-
-    // Build strict prompt
-    const prompt = buildPrompt(description, userProvidedType, userProvidedSeverity);
+    // Prompting The Gemini Model
+    const prompt = buildPrompt(description, userProvidedType);
 
     // Initialize Gemini client (key from env)
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
     const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
 
-    // Call Gemini
+    // Calling  Gemini Model 
     const result = await model.generateContent(prompt);
     const responseText = result.response.text();
 
-    // Extract and parse JSON (Gemini sometimes adds markdown)
+    // Extract and parse JSON
     const jsonMatch = responseText.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
       throw new Error("No JSON found in response");
     }
-
-    const classification = JSON.parse(jsonMatch[0]);
-
-    await emit({
-      topic: 'emergency.updated',
-      data: { 
-        classification, 
-        emergencyId
-      }
-    })
-
+    classification = JSON.parse(jsonMatch[0]);
     logger.info("AI classification successful", { classification });
 
-    return classification;
   } catch(error:any){
     logger.error("AI classification failed", { error: error.message });
-
     // Safe fallback – never block emergency creation
-    return {
+    classification = {
       classifiedType: input.userProvidedType || "unknown",
-      severity: input.userProvidedSeverity || 5,
+      severity: 5,
       requiredUnits: 1,
       specialEquipment: [],
       estimatedResponseTimeCritical: 10,
-      reasoning: "AI failed – using fallback values",
+      reasoning: "AI failed: using fallback values",
       confidence: 0.0,
     };
 
   }
+  
+  await emit({
+      topic: 'emergency.updated',
+      data: { 
+        classification, 
+        emergencyId: input.emergencyId
+      }
+    })
 
+  return classification;
 }

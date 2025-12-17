@@ -48,20 +48,20 @@ export const Emergency: React.FC = () => {
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-          <div className="w-full max-w-3xl bg-white rounded-2xl shadow-lg p-8">
+          <div className="w-full max-w-3xl bg-white rounded-2xl shadow-lg p-6">
             <h2 className="text-xl text-center font-semibold ">Report Emergency</h2>
 
             <div className="mb-8">
               <h2 className="font-medium mb-3">Emergency Type</  h2>
               <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
 
-                <label className="block text-sm/6 font-medium border p-2">
+                <label className="border rounded-xl p-4 cursor-pointer hover:border-blue-500 text-center">
                   <input type="radio" value={"medical"} {...register("type",{required:true})} className="hidden"/>
                 Medical</label>
-                <label className="block text-sm/6 font-medium border p-2">
+                <label className="border rounded-xl p-4 cursor-pointer hover:border-blue-500 text-center">
                   <input type="radio" value={"fire"} {...register("type",{required:true})} className="hidden"/>
                 Fire</label>
-                <label className="block text-sm/6 font-medium border p-2">
+                <label className="border rounded-xl p-4 cursor-pointer hover:border-blue-500 text-center">
                   <input type="radio" value={"police"} {...register("type",{required:true})} className="hidden"/>
                 Police</label>
 
@@ -70,9 +70,7 @@ export const Emergency: React.FC = () => {
             </div>
 
             <div className="mb-8">
-              <label htmlFor="severity" className="block text-sm/6 font-medium ">Severity</label>
-              <div className="mt-2">
-                <input type="range" id="severity" min={1} max={10} {...register("severity",{required:true ,valueAsNumber:true})} className="w-100"/>
+              
                 <div className="mb-6">
                   <label htmlFor="description" className="block text-sm/6 font-medium">Description</label>
                   <div className="mt-2">
@@ -86,17 +84,17 @@ export const Emergency: React.FC = () => {
               <input type="hidden" {...register("location.lat",{required:true})}/>
               <input type="hidden" {...register("location.lng",{required:true})}/>
               
-                <div className="mb-8">
+                <div className="mb-4">
                   <label htmlFor="location" className="block text-sm/6 font-medium">Location</label>     
-                  <input
+                  {/* <input
                     type="text"
                     value={`Lat: ${watch("location.lat")}, Lng: ${watch("location.lng")}`}
                     readOnly
                     className="w-full rounded-lg border border-gray-300 p-3 bg-gray-100"
-                  />
+                  /> */}
                   
                 </div>
-            </div>
+            
 
             <div style={{ height: "300px", width: "400px" }}>
               <MapView  lat={watch("location.lat")} lng={watch("location.lng")}/>
