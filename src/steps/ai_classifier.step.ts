@@ -10,7 +10,7 @@ export const config = {
   name: 'ai-classifier',
   type: 'event',
   subscribes: ['ai-classifier'],
-  emits:[]
+  emits:['emergency.updated']
 }
 
 
@@ -48,7 +48,7 @@ export const handler= async (input: { description: string;
     userProvidedType?: string;
     userProvidedSeverity?: number,
     emergencyId: string
-   },{ logger, state }: any) => {
+   },{ logger, emit }: any) => {
   try{
     const { description, userProvidedType, userProvidedSeverity, emergencyId } = input
     console.log('ai-classifier: ', input);
@@ -76,6 +76,14 @@ export const handler= async (input: { description: string;
     }
 
     const classification = JSON.parse(jsonMatch[0]);
+
+    await emit({
+      topic: 'emergency.updated',
+      data: { 
+        classification, 
+        emergencyId
+      }
+    })
 
     logger.info("AI classification successful", { classification });
 

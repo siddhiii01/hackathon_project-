@@ -21,6 +21,7 @@ export interface Emergency  {
     assignedUnitId: string | null;
     // requiredEquipment: string[];
     aireasoning: string | null;
+    requiredUnits: number
 }
 
 //which are the units are assigned

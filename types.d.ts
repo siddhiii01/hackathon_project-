@@ -15,8 +15,10 @@ declare module 'motia' {
     'UnitAssigning': EventHandler<never, never>
     'GetEmergency': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'InitUnits': ApiRouteHandler<Record<string, unknown>, unknown, never>
+    'EmergencyUpdate': EventHandler<never, { topic: 'emergency.dispatch'; data: never }>
     'Emergency': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'emergency.created'; data: never } | { topic: 'ai-classifier'; data: never }>
-    'ai-classifier': EventHandler<never, never>
+    'ai-classifier': EventHandler<never, { topic: 'emergency.updated'; data: never }>
+    'EmergencyDispatch': EventHandler<never, never>
   }
     
 }

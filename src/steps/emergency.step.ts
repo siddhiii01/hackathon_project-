@@ -18,6 +18,7 @@ export const config: ApiRouteConfig = {
   path: '/emergency',
   method: 'POST',
   emits: ['emergency.created', 'ai-classifier'],
+  flows: ['emergency-created']
 }
  
 export const handler = async (req:any, { logger, state,emit }: any) => {
@@ -41,7 +42,8 @@ export const handler = async (req:any, { logger, state,emit }: any) => {
     status: 'pending',
     createdAt: new Date(),
     assignedUnitId: null,
-    aireasoning: null
+    aireasoning: null,
+    requiredUnits: 1
   } 
 
   // ALWAYS persist emergency
