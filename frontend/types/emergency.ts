@@ -6,7 +6,6 @@ export interface Location {
 
 export interface EmergencyFormData {
   type: EmergencyType,
-  severity: number,
   description: string,
   location:Location
 }

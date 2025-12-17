@@ -14,7 +14,7 @@ export interface Emergency  {
     id: string,
     type: EmergencyType,
     location: Location,
-    severity: number,
+    severity: number | null,
     description: string,
     status: EmergencyStatus,
     createdAt: Date,

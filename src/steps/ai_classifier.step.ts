@@ -9,7 +9,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 export const config = {
   name: 'ai-classifier',
   type: 'event',
-  subscribes: ['ai-classifier'],
+  subscribes: ['emergency.created'],
   emits:['emergency.updated']
 }
 
@@ -94,7 +94,7 @@ export const handler= async (input: { description: string;
     // Safe fallback – never block emergency creation
     return {
       classifiedType: input.userProvidedType || "unknown",
-      severity: input.userProvidedSeverity || 5,
+      severity: 5,
       requiredUnits: 1,
       specialEquipment: [],
       estimatedResponseTimeCritical: 10,
