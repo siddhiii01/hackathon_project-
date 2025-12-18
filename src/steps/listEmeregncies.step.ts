@@ -15,6 +15,7 @@ export const handler = async (req: any, { state, logger }: any) => {
   
   if (!emergenciesMap || emergenciesMap.length === 0) {
     return {
+      
       status: 200,
       body: {
         success: true,

@@ -2,7 +2,7 @@ export const config = {
   name: 'EmergencyResolving',
   type: "event",
   subscribes: ['emergency.active'],
-  emits: ['emergency.resolved']
+  emits: ['emergency.resolved', 'unit.available']
 }
 
 export const handler =async(input: { emergencyId: string, unitId:string }, {state,logger,emit}:any) => {
@@ -18,6 +18,9 @@ export const handler =async(input: { emergencyId: string, unitId:string }, {stat
   //Now emergency has been resolved -> New State
   emergency.status='resolved';
   unit.status='available';
+
+  //on unit available 
+  //here the corn should bre excute that is the 'emergency.pending.enqueued' -> this should be run 
   unit.currentEmergencyId=null;
   logger.info('Emergency resolved, Unit avaiable', { emergencyId, unitId});
 
@@ -33,5 +36,11 @@ export const handler =async(input: { emergencyId: string, unitId:string }, {stat
     data: {emergencyId, unitId}
   });
 
+
+  // NEW: Emit unit available event to trigger immediate assignment
+  await emit({
+    topic: 'unit.available',
+    data: { unitId }
+  });
   
 }
