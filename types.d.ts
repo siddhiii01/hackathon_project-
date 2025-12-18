@@ -22,6 +22,8 @@ declare module 'motia' {
     'EmergencyResolving': EventHandler<never, never>
     'Emergency': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'emergency.created'; data: never }>
     'ai-classifier': EventHandler<never, { topic: 'emergency.updated'; data: never }>
+    'FetchEmergencies': ApiRouteHandler<Record<string, unknown>, unknown, never>
+    'FetchUnits': ApiRouteHandler<Record<string, unknown>, unknown, never>
   }
     
 }
