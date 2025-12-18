@@ -8,7 +8,7 @@ export const config = {
   //2 emit here 
     //-> when unit found: unit.dispatched
     //-> when unit not found: emergency.pending.enqueued
-  emits:['unit.dispatched', 'emergency.pending.enqueued']  
+  emits:['unit.dispatched']  
 }
 
 export const handler= async (input: { emergencyId: string },{ logger, state, emit }: any) => {
@@ -45,7 +45,7 @@ export const handler= async (input: { emergencyId: string },{ logger, state, emi
             //Update state of Emergency and Units
             await state.set('units', nearestUnit?.id, nearestUnit)
             await state.set('emergencies', emergency.id, emergency)
-            logger.info('Unit Assigned Successfyly to Emergency', { emergencyId, unitId: nearestUnit.id });
+            logger.info(`${emergency.id}, Unit Assigned Successfyly to Emergency`, { emergencyId, unitId: nearestUnit.id });
             
             //Now unit is assigned now Dispatch the Unit
             await emit({
@@ -63,12 +63,8 @@ export const handler= async (input: { emergencyId: string },{ logger, state, emi
                 requiredUnits: emergency.requiredUnits
             });
 
-            //no need to emit queue_processor.job.ts runs on a schedule (every 30s)
-            //It automatically finds pending emergencies
-            // await emit({
-            //     topic: 'emergency.pending.enqueued',
-            //     data: { emergencyId: emergency.id , timestamp: Date.now()}
-            // });
+
+
             logger.warn('No Unit was found Emergency to Pending State', { emergency });
             
         }  
