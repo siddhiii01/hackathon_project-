@@ -4,7 +4,7 @@ import { getPendingEmergenciesInPriorityOrder } from '../utils/queue';
 export const config = {
   type: 'cron',  // Motia background job type -> cron
   name: 'QueueProcessor',
-  cron: '*/5 * * * * *', // Every 30 seconds (cron format)
+  cron: '*/5 * * * *', // Every 30 seconds (cron format)
   emits: ['unit.assigning']
 }
 
