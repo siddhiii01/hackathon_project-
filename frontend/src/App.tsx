@@ -1,14 +1,20 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+
 import { Emergency } from './Emergency'
+import { Route, Routes } from 'react-router-dom'
+import { EmergencyStatus } from './EmergencyStatus'
+import { AdminDashboard } from './AdminDashboard'
+import { Navbar } from './components/Navbar'
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
     <>
-      <Emergency/>
+      <Navbar/>
+      <Routes>
+        <Route path='/' element={<AdminDashboard />} />
+        <Route path='/emergency' element={<Emergency/>}/>
+        <Route path='/emergency/:id' element={<EmergencyStatus/>} />
+      </Routes>
     </>
   )
 }

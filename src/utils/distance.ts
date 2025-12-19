@@ -21,6 +21,8 @@ export const calculateRadialDistanceBetweenCoordinates = (
                                             Math.sqrt(haversineOfCentralAngle),
                                             Math.sqrt(1 - haversineOfCentralAngle)
                                     );
+
+    //here Distance is Calulated in KiloMeters                                
     const distanceInKm = EARTH_RADIUS_IN_KM * centralAngle;
     return distanceInKm;
     
