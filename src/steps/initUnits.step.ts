@@ -5,13 +5,13 @@ export const config: ApiRouteConfig = {
   name: 'InitUnits',
   type: 'api',
   path: '/units',
-  method: 'POST',
+  method: 'POST', 
   emits: []
 }
 
 export const handler = async (_req:any, { state, logger }:any) => {
-  const unitsMap = await state.getGroup('units');
-  console.log(unitsMap)
+  const unitsMap = await state.getGroup('units'); //this returns [Object object]
+  logger.info({unitsMap})
   if (unitsMap.length === 0) {
     await SeedUnits(state);
     logger.info('Units seeded into Motia state');

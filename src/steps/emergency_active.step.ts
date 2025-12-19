@@ -26,7 +26,18 @@ export const handler =async(input: { emergencyId: string, unitId:string }, {stat
 
   //Saving to state that emergency is resolved now unit is available
   await state.set('emergencies', emergencyId, emergency);
-  await state.set('units', unitId, unit)
+  await state.set('units', unitId, unit);
+
+  const assignments = await state.getGroup('assignments');
+  const assignment = Object.values(assignments).find(
+    (a: any) => a.emergencyId === emergencyId && a.unitId === unitId
+  );
+
+  if (assignment) {
+    assignment.completionTime = new Date();
+    assignment.arrivalTime = assignment.arrivalTime || new Date(); // Set if not already set
+    await state.set('assignments', assignment.id, assignment);
+  }
 
   //New Event: Emergency Resolved
   //  Who Listens:
