@@ -4,19 +4,15 @@ import axios from "axios";
 
 export const EmergencyStatus = () => {
   const { id } = useParams();
-  const [emergency, setEmergency] = useState<any>(null);
-  const [assignments,setAssignments] = useState<any>(null);
+  const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!id) return;
     const interval = setInterval(async () => {
       try {
-        const res = await axios.get(`http://localhost:3000/emergency/${id}`);
-        const assRes = await axios.get(`http://localhost :3000/getAssignments`);
-        console.log(assRes);
-        setEmergency(res.data);
-        setAssignments(assRes.data);
+        const res = await axios.get(`http://localhost:3000/emergency/${id}/status`);
+        setData(res.data);
         setLoading(false);
 
         if (res.data.status === "dispatched") {
@@ -39,17 +35,17 @@ export const EmergencyStatus = () => {
           Emergency Status
         </h2>
 
-        <p><strong>ID:</strong> {emergency.id}</p>
-        <p><strong>Type:</strong> {emergency.type}</p>
-        <p><strong>Status:</strong> {emergency.status}</p>
+        <p><strong>ID:</strong> {data.emergency.id}</p>
+        <p><strong>Type:</strong> {data.emergency.type}</p>
+        <p><strong>Status:</strong> {data.emergency.status}</p>
 
-        {emergency.assignedUnitId && (
+        {data.emergency.assignedUnitId && (
           <p className="mt-2 text-green-600">
-            Unit Dispatched: {emergency.assignedUnitId}
+            Unit Dispatched: {data.unit.id}
           </p>
         )}
 
-        {emergency.status === "pending" && (
+        {data.emergency.status === "pending" && (
           <p className="mt-4 text-yellow-600">
             Assigning nearest unit...
           </p>

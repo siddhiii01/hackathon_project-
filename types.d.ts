@@ -14,8 +14,11 @@ declare module 'motia' {
   interface Handlers {
     'UnitDispatched': EventHandler<never, { topic: 'emergency.active'; data: never }>
     'UnitAvailableHandler': EventHandler<never, never>
+    'FindAndUnitAssign': EventHandler<never, never>
     'FetchUnits': ApiRouteHandler<Record<string, unknown>, unknown, never>
+    'GetEmergencyStatus': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'FetchEmergencies': ApiRouteHandler<Record<string, unknown>, unknown, never>
+    'GetAssignments': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'ResetAllUnits': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'QueueProcessor': CronHandler<never>
     'ListEmergencies': ApiRouteHandler<Record<string, unknown>, unknown, never>
@@ -26,7 +29,6 @@ declare module 'motia' {
     'EmergencyCreated': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'pending_classification'; data: never }>
     'EmergencyDispatch': EventHandler<never, never>
     'ai-classifier': EventHandler<never, { topic: 'unit.assigning.requested'; data: never }>
-    'FindAndUnitAssign': EventHandler<never, never>
   }
     
 }

@@ -23,7 +23,7 @@ export const Emergency: React.FC = () => {
     // user need to see the status whether they r available or not
     const id = res.data.emergencyId;
     reset(); // to refresh input ele after submit
-    navigate(`/emergency/${id}`);
+    navigate(`/emergency/${id}/status`);
   }
 
   const [loc,setLoc] = React.useState(false);
