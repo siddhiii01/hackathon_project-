@@ -4,11 +4,9 @@ import { Severity } from '../../types/models';
 export const config = {
   name: 'ai-classifier',
   type: 'event',
-
   subscribes: ['pending_classification'], 
   emits:['unit.assigning.requested'] 
 }
-
 
 // Prompt builder helper – strict for JSON output
 const buildPrompt = ( description: string, guessedType?: string): string => {
@@ -44,16 +42,14 @@ const buildPrompt = ( description: string, guessedType?: string): string => {
 };
 
 //Main handler – receives input, calls Gemini, parses, fallbacks
-
 export const handler= async (
   input: { description: string; userProvidedType?: string; emergencyId: string},
   { logger, emit,state }: any) => {
 
-
   const { description, userProvidedType, emergencyId } = input
 
   if (!description || !emergencyId) {
-    logger.error("Invalid payload for classifier", input);
+    logger.error("Invalid payload for classifier", {description,emergencyId });
     return;
   }
 
@@ -85,7 +81,7 @@ export const handler= async (
     }
     classification = JSON.parse(jsonMatch[0]);
 
-    logger.info("AI classification successful", { classification });
+    logger.info("AI classification successful");
     } catch(error:any){
       logger.error("AI classification failed using fallback value", { error: error.message });
       // Safe fallback – never block emergency creation

@@ -2,7 +2,6 @@ import { ApiRouteConfig, Handlers } from 'motia'
 import { z } from 'zod'
 import { Emergency } from '../../types/models';
 
-
 const emergencySchema = z.object({
   type: z.enum(['medical', 'fire', 'police']),
   location: z.object({lat:z.number(), lng:z.number()}),
@@ -10,15 +9,12 @@ const emergencySchema = z.object({
   description: z.string()
 }).strict()
 
-
- 
 export const config: ApiRouteConfig = {
   name: 'EmergencyCreated',
   type: 'api',
   path: '/emergency',
   method: 'POST',
-  emits: ['ai-classifier'], 
-  flows: ['emergency-created']
+  emits: ['pending_classification'], 
 }
  
 export const handler = async (req:any, { logger, state,emit }: any) => {
@@ -64,9 +60,7 @@ export const handler = async (req:any, { logger, state,emit }: any) => {
     }
   }
 
-  logger.info('Emergency created with pending classification', {
-    emergency: emergency,
-  });   
+  logger.info('Emergency created with pending classification', {emergencyId: emergency.id,});   
  try {
     await emit({
       topic: 'pending_classification',
