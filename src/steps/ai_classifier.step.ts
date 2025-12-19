@@ -1,5 +1,5 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { Severity } from '../../types/models';
+
 
 export const config = {
   name: 'ai-classifier',
@@ -120,3 +120,5 @@ export const handler= async (
 
   
 }
+
+//emergency -> classified
