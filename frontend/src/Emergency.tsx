@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect } from "react"
 import {useForm, type SubmitHandler} from "react-hook-form"
 import type {EmergencyFormData} from '../types/emergency'
 import axios from "axios"
@@ -15,30 +15,35 @@ export const Emergency: React.FC = () => {
   } = useForm<EmergencyFormData>();
 
   const navigate = useNavigate();
+  const { reset } = useForm<EmergencyFormData>();
 
   const onSubmit:SubmitHandler<EmergencyFormData> = async(data:EmergencyFormData) => {
     const res = await axios.post("http://localhost:3000/emergency",data);
 
     // user need to see the status whether they r available or not
     const id = res.data.emergencyId;
+    reset(); // to refresh input ele after submit
     navigate(`/emergency/${id}`);
   }
 
-  //const [loc,setLoc] = useState({});
+  const [loc,setLoc] = React.useState(false);
 
   function success(position:GeolocationPosition) {
     setValue("location.lat",position.coords.latitude);
     setValue("location.lng",position.coords.longitude);
+    setLoc(true);
   } 
 
   function error() {
+    setLoc(false);
+    // alert("Location access is required");
     console.error("Location access denied");
   } 
 
   useEffect(() =>{
     if(!navigator.geolocation) return;
     try {
-    navigator.geolocation.getCurrentPosition(success,error);
+      navigator.geolocation.getCurrentPosition(success,error);
     } catch(error) {
       console.error("Location access failed");
     }
@@ -47,16 +52,16 @@ export const Emergency: React.FC = () => {
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="py-14 bg-slate-50 flex items-center justify-center">
           <div className="w-full max-w-3xl bg-white rounded-2xl shadow-lg p-6">
             <h2 className="text-xl text-center font-semibold ">Report Emergency</h2>
 
-            <div className="mb-8">
-              <h2 className="font-medium mb-3">Emergency Type</  h2>
+            <div className="mb-4">
+              <h2 className="font-medium mt-3 mb-2">Emergency Type</  h2>
               <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
 
                 <label className="border rounded-xl p-4 cursor-pointer hover:border-blue-500 text-center">
-                  <input type="radio" value={"medical"} {...register("type",{required:true})} className="hidden"/>
+                  <input type="radio" value={"medical"} {...register("type",{required:true})} className="peer hidden"/>
                 Medical</label>
                 <label className="border rounded-xl p-4 cursor-pointer hover:border-blue-500 text-center">
                   <input type="radio" value={"fire"} {...register("type",{required:true})} className="hidden"/>
@@ -66,12 +71,14 @@ export const Emergency: React.FC = () => {
                 Police</label>
 
               </div>
-              {errors.type && <p className="text-red-500">Type is required</p>}
+              {errors.type &&  <p className="text-sm text-red-600 mt-2">
+                Please select an emergency type
+              </p>}
             </div>
 
-            <div className="mb-8">
+            <div className="mb-4">
               
-                <div className="mb-6">
+                <div className="mb-4">
                   <label htmlFor="description" className="block text-sm/6 font-medium">Description</label>
                   <div className="mt-2">
                     <textarea id="description" {...register("description",{required:true})} rows={3} className=" w-full rounded-lg-border border border-gray-300"/>
@@ -95,11 +102,14 @@ export const Emergency: React.FC = () => {
                   
                 </div>
             
+              {!loc && <p className="text-red-500 font-bold">Location access is required</p>}
+              {loc && (
+                 <div style={{ height: "250px" }}>
+                  <MapView  lat={watch("location.lat")} lng={watch("location.lng")}/>
+                </div>
+              )}
 
-            <div style={{ height: "300px", width: "400px" }}>
-              <MapView  lat={watch("location.lat")} lng={watch("location.lng")}/>
-            </div>
-          <button type="submit" className="bg-blue-500 hover:bg-blue-700 mt-2 text-white font-bold py-2 px-4 border border-blue-700 rounded">Submit Emergency</button>
+          <button type="submit" disabled={!loc} className="bg-blue-500 hover:bg-blue-700 mt-2 text-white font-bold py-2 px-4 border border-blue-700 rounded">Submit Emergency</button>
           </div>
         </div>
 

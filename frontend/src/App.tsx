@@ -1,5 +1,3 @@
-import { useState } from 'react'
-
 import { Emergency } from './Emergency'
 import { Route, Routes } from 'react-router-dom'
 import { EmergencyStatus } from './EmergencyStatus'
