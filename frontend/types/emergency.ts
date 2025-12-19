@@ -12,6 +12,7 @@ export interface Location {
 }
 
 export interface EmergencyFormData {
+  id?: string,
   type: EmergencyType,
   description: string,
   location:Location,
@@ -27,5 +28,13 @@ export interface UnitFormData {
 
 export interface DashboardCardProps {
   emergencies: EmergencyFormData[],
-  units: UnitFormData[]
+  units: UnitFormData[],
+  selectedView:string | null,
+  onCardClick?: (view:string) => void 
 } 
+
+export interface TableProps {
+  emergencies: EmergencyFormData[],
+  units: UnitFormData[],
+  selectedView: string | null;
+}
