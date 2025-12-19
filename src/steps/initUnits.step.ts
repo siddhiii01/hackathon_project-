@@ -10,13 +10,18 @@ export const config: ApiRouteConfig = {
 }
 
 export const handler = async (_req:any, { state, logger }:any) => {
-  const unitsMap = await state.getGroup('units'); //this returns [Object object]
-  logger.info({unitsMap})
-  if (unitsMap.length === 0) {
-    await SeedUnits(state);
-    logger.info('Units seeded into Motia state');
-  }
-  return { status: 200, body: { success: true, unitsMap } };
+  let units = await state.getGroup('units'); //this returns Array of Objects 
+  // let emergency = await state.getGroup('emrgencies'); //this returns Array of Objects 
+  // if(units && emergency){
+  //   await state.clear('units')
+  //   await state.clear('emergencies')
+  // }
 
+  // return { status: 200,body: {units, emergency}}
+  if (!units || units.length === 0) {
+    await SeedUnits(state); //initialize units
+    units = await state.getGroup('units');   // fetch seeded values
+  }
+  return { status: 200, body:{ success:true, units }};
 };
 
