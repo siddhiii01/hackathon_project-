@@ -1,5 +1,14 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
+// ✅ ADD THIS HELPER FUNCTION
+const mapEmergencyTypeToUnitType = (emergencyType: string): string => {
+  const typeMapping: Record<string, string> = {
+    'medical': 'ambulance',
+    'fire': 'fire_truck',
+    'police': 'police_car'
+  };
+  return typeMapping[emergencyType] || 'ambulance';
+};
 
 export const config = {
   name: 'ai-classifier',
@@ -81,18 +90,28 @@ export const handler= async (
     }
     classification = JSON.parse(jsonMatch[0]);
 
+
+    // ✅ ADD THIS VALIDATION
+    if (!classification.requiredUnitType) {
+      classification.requiredUnitType = mapEmergencyTypeToUnitType(
+        classification.classifiedType || userProvidedType || emergency.type
+      );
+      logger.warn(`AI didn't provide requiredUnitType, mapped to: ${classification.requiredUnitType}`);
+    }
     logger.info("AI classification successful");
     } catch(error:any){
       logger.error("AI classification failed using fallback value", { error: error.message });
+      const emergencyType = userProvidedType || emergency.type;
       // Safe fallback – never block emergency creation
       classification = {
-        classifiedType: userProvidedType || emergency.type,
+        classifiedType: emergencyType,
         severity: 5,
         requiredUnits: 1,
         specialEquipment: [],
         estimatedResponseTimeCritical: 10,
         reasoning: "AI failed: using fallback values",
         confidence: 0.0,
+        requiredUnitType: mapEmergencyTypeToUnitType(emergencyType),
       };
   }
 

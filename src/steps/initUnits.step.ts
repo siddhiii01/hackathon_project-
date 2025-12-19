@@ -17,11 +17,11 @@ export const handler = async (_req:any, { state, logger }:any) => {
   //   await state.clear('emergencies')
   // }
 
-  // return { status: 200,body: {units, emergency}}
+  // return { status: 200,body: {units, emergency} }
   if (!units || units.length === 0) {
     await SeedUnits(state); //initialize units
     units = await state.getGroup('units');   // fetch seeded values
   }
-  return { status: 200, body:{ success:true, units }};
+  return { status: 200, body:{ success:true, units}, message: `LENGTH OF UNITS: ${units.length }`};
 };
 

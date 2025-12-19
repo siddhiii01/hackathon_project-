@@ -19,9 +19,17 @@ export const handler= async (input: { emergencyId: string },{ logger, state, emi
             throw new Error(`Emergency not found: ${emergencyId}`)
         }
 
+        // ✅ Check if already assigned
+        if (emergency.status === 'assigned' || emergency.status === 'active') {
+            logger.info(`Emergency ${emergencyId} already assigned, skipping`);
+            return;
+        }
+
+        logger.info("Assignment requested for emergency", { emergencyId });
+
         //Loading all the units from the state
         let units = await state.getGroup('units'); //this is Array of Objects [{}, {}]
-        if(units.length == 0) {  //when no units are present in state
+        if(units.length == 0 ) {  //when no units are present in state
             await SeedUnits(state);
             units = await state.getGroup('units'); 
         }
@@ -36,6 +44,8 @@ export const handler= async (input: { emergencyId: string },{ logger, state, emi
             });
             return;
         }
+
+        
         
         //Calculating ETA 
         const etaMinutes = Math.round((distancekm/nearestUnit.averageSpeedKmph) * 60)

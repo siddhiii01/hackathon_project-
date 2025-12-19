@@ -18,7 +18,7 @@ export async function SeedUnits(state: any) {
   //Now saving Units in State 
 
   //Amublance Units: 
-  for(let i=1; i<=5; i++) {
+  for(let i=1; i<=25; i++) {
     await state.set('units', `AMB_${i}`,{
       id: `AMB_${i}`,
       type: 'ambulance' as UnitType,
@@ -33,7 +33,7 @@ export async function SeedUnits(state: any) {
   }
 
   //Fire Units
-  for(let i=1;i<=3;i++) {
+  for(let i=1;i<=23;i++) {
     await state.set('units', `FIRE_${i}`,{
       id: `FIRE_${i}`,
       type: 'fire_truck' as UnitType,
@@ -48,7 +48,7 @@ export async function SeedUnits(state: any) {
   }
 
   //Police units
-  for(let i=1;i<=2;i++) {
+  for(let i=1;i<=22;i++) {
     await state.set('units', `POL_${i}`,{
       id: `POL_${i}`,
       type: 'police_car' as UnitType,

@@ -4,7 +4,7 @@ export const config = {
   name: 'EmergencyResolving',
   type: "event",
   subscribes: ['emergency.active'],
-  emits: ['emergency.resolved', 'unit.available']
+  emits: []
 }
 
 export const handler =async(input: { emergencyId: string, unitId:string }, {state,logger,emit}:any) => {
@@ -37,15 +37,7 @@ export const handler =async(input: { emergencyId: string, unitId:string }, {stat
     assignment.completionTime = new Date();
     await state.set("assignments", assignment.id, assignment);
   }
-  await emit({
-    topic:"emergency.resolved",
-    data:{emergencyId, unitId}
-  });
-
-  await emit({
-    topic:"unit.available",
-    data:{unitId}
-  });
+  
 
   logger.info("Emergency resolved + Unit available",{ emergencyId, unitId });
   
