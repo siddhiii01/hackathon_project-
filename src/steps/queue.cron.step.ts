@@ -1,47 +1,43 @@
 import { getPendingEmergenciesInPriorityOrder } from '../utils/queue';
 
-// This runs automatically every 30 seconds as a background job
 export const config = {
-  type: 'cron',  // Motia background job type -> cron
+  type: 'cron',
   name: 'QueueProcessor',
-  cron: '*/5  * * * *', // Every 30 seconds (cron format)
-  emits: ['unit.assigning.retry']
-}
-//here the state is undefined
-export const handler = async (req: any, { state, emit, logger }: any) => {
+  cron: '*/30 * * * * *', 
+  emits: ['unit.assigning.requested']
+};
+
+export const handler = async ({ state, emit, logger }: any) => {
   logger.info('Queue processor running...');
 
-  // Get all pending emergencies sorted by priority
-  const pending = await getPendingEmergenciesInPriorityOrder(state);
+  // Get pending emergencies in priority order
+  const pending = await getPendingEmergenciesInPriorityOrder(state); 
+  console.log("All the pending emergencies: ", pending)
+
   if (pending.length === 0) {
     logger.info('No pending emergencies');
     return;
   }
 
-  //Check if ANY units are available first
-  const unitsMap = await state.getGroup('units');
-  const availableUnits = Object.values(unitsMap).filter(
-    (u: any) => u.status === 'available'
-  );
-  
-  if (availableUnits.length === 0) {
-    logger.info('No units available, skipping queue processing');
-    return;
-  }
+  logger.info(`Pending emergencies: ${pending.length}`);
 
-  logger.info(`Found ${pending.length} pending emergencies`);
-
-  // Try to dispatch each pending emergency
+  //ssigning per emergency
   for (const emergency of pending) {
-     const canAssign = availableUnits.some(
-      (u: any) => u.type === emergency.requiredUnitType
-    );
-    
+    const unitsMap = await state.getGroup('units'); //this return [ 0:{}, 1:{}, {}, ]
+
+    const availableUnits = Object.values(unitsMap).filter((u: any) => u.status === 'available'); //[{}, {}]
+    if (availableUnits.length === 0) {
+      logger.info('No units available right now');
+      return;
+    }
+
+    const canAssign = availableUnits.some((u: any) => u.type === emergency.requiredUnitType);
     if (canAssign) {
+      logger.info(`Retry assigning: ${emergency.id}`);
       await emit({
-        topic: 'unit.assigning.retry', // Skip AI, go straight to assignment
+        topic: 'unit.assigning.requested',
         data: { emergencyId: emergency.id }
       });
     }
   }
-}
+};
