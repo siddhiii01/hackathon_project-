@@ -5,17 +5,18 @@ import axios from "axios";
 export const EmergencyStatus = () => {
   const { id } = useParams();
   const [emergency, setEmergency] = useState<any>(null);
+  const [assignments,setAssignments] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!id) return;
     const interval = setInterval(async () => {
       try {
-        const res = await axios.get(
-          `http://localhost:3000/emergency/${id}`
-        );
-
+        const res = await axios.get(`http://localhost:3000/emergency/${id}`);
+        const assRes = await axios.get(`http://localhost :3000/getAssignments`);
+        console.log(assRes);
         setEmergency(res.data);
+        setAssignments(assRes.data);
         setLoading(false);
 
         if (res.data.status === "dispatched") {
