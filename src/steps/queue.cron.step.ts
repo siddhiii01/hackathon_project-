@@ -3,8 +3,8 @@ import { getPendingEmergenciesInPriorityOrder } from '../utils/queue';
 export const config = {
   type: 'cron',
   name: 'QueueProcessor',
-  cron: '*/30 * * * * *', 
-  emits: ['unit.assigning.requested']
+  cron: '*/5 * * * *', 
+  emits: ['unit.assigning']
 };
 
 export const handler = async ({ state, emit, logger }: any) => {
@@ -35,7 +35,7 @@ export const handler = async ({ state, emit, logger }: any) => {
     if (canAssign) {
       logger.info(`Retry assigning: ${emergency.id}`);
       await emit({
-        topic: 'unit.assigning.requested',
+        topic: 'unit.assigning',
         data: { emergencyId: emergency.id }
       });
     }

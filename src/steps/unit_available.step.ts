@@ -29,7 +29,7 @@ export const handler = async (
     // Emit unit.assigning for the first pending emergency
     // The unit assignment handler will pick the nearest available unit
     await emit({
-      topic: 'unit.assigning',
+      topic: 'unit.assigning.requested',
       data: { emergencyId: pending[0].id }
     });
 

@@ -3,7 +3,7 @@ import { Assignment } from "types/models";
 export const config = {
   name: 'UnitDispatched',
   type: "event",
-  subscribes: ['unit.dispatched'], 
+  subscribes: ['unit.travelling'], 
   emits: ['emergency.active'] //after unit is dispacted what event should fire
 }
 

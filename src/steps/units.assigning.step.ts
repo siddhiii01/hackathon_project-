@@ -3,7 +3,7 @@ import {findNearestAvailableUnit} from "../utils/dispatch";
 
 export const config = {
   name: 'FindAndUnitAssign',
-  type: 'event',
+  type: 'event', 
   subscribes: ['unit.assigning.requested'],
   emits:['unit.travelling']  
 }
@@ -45,8 +45,8 @@ export const handler= async (input: { emergencyId: string },{ logger, state, emi
         emergency.assignedUnitId = nearestUnit.id;
 
         //Update state of Emergency and Units
-        const u = await state.set('units', nearestUnit?.id, nearestUnit)
-        const e = await state.set('emergencies', emergency.id, emergency)
+        await state.set('units', nearestUnit?.id, nearestUnit)
+        await state.set('emergencies', emergency.id, emergency)
         // console.log("new u: ", u)
         // console.log("new e: ", e)
         logger.info(`${emergency.id}, Unit Assigned Successfyly to Emergency`, { emergencyId, unitId: nearestUnit.id });
@@ -68,7 +68,7 @@ export const handler= async (input: { emergencyId: string },{ logger, state, emi
             
         //Now unit is assigned now Dispatch the Unit
         await emit({
-            topic: 'unit.dispatched',
+            topic: 'unit.travelling',
             data: {emergencyId:emergency.id, unitId: nearestUnit.id}
         });  
         logger.info("Unit successfully assigned + assignment saved", {
