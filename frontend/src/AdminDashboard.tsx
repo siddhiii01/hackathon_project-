@@ -2,11 +2,12 @@ import React, { useEffect, useState } from "react"
 import type { EmergencyFormData, UnitFormData } from "../types/emergency"
 import axios from "axios";
 import { DashboardCards } from "./components/DashboardCards";
-import { data } from "react-router-dom";
+import { DynamicTable } from "./components/DynamicTable";
 
 export const AdminDashboard:React.FC = () => {
   const [emergencies,setEmergencies] = useState<EmergencyFormData[]>([]);
   const [units,setUnits] = useState<UnitFormData[]>([]);
+  const [selectedView,setSelectedView] = useState<string | null>(null); // becoz we need to render nultiple table so we shld know which one is clicked
 
   const fetchData = async() => {
     const emergencyList =await axios.get('http://localhost:3000/getEmergencies');
@@ -19,10 +20,19 @@ export const AdminDashboard:React.FC = () => {
     fetchData();
   },[]);
 
+  const onCardClick = (view:string) => {
+    setSelectedView(view);
+  }
+
   return (
     <>
-      <div className="">
-        <DashboardCards emergencies={emergencies} units={units}/>  
+      <div className="min-h-screen bg-gray-50 py-6">
+        <div className="max-w-8xl px-6 py-10">
+          {/* from cards i hv dfferntiate all cards which in clicked and stored it in view */}
+          <DashboardCards emergencies={emergencies} units={units} selectedView={selectedView} onCardClick={onCardClick}/>  
+
+          <DynamicTable emergencies={emergencies} units={units} selectedView={selectedView}/>
+        </div>
       </div>
     </>
   )
