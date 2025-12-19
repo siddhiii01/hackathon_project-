@@ -7,7 +7,7 @@ export type EmergencyType = 'medical' | 'fire' | 'police';
 export type EmergencyStatus = 'pending' | 'classified' | 'assigned' | 'active' | 'resolved';
 
 export type UnitType = "ambulance" | "fire_truck" | "police_car";
-export type UnitStatus = "available" | 'selected'| "dispatched" | "busy" | "available again";
+export type UnitStatus = "available" | 'selected'| "dispatched" | "busy" ;
 
 export type Severity = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
 

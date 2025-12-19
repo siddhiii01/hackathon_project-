@@ -5,7 +5,7 @@ export const config = {
   name: 'FindAndUnitAssign',
   type: 'event',
   subscribes: ['unit.assigning.requested'],
-  emits:['unitl']  
+  emits:['unit.travelling']  
 }
 
 export const handler= async (input: { emergencyId: string },{ logger, state, emit }: any) => {
@@ -47,8 +47,8 @@ export const handler= async (input: { emergencyId: string },{ logger, state, emi
         //Update state of Emergency and Units
         const u = await state.set('units', nearestUnit?.id, nearestUnit)
         const e = await state.set('emergencies', emergency.id, emergency)
-        console.log("new u: ", u)
-        console.log("new e: ", e)
+        // console.log("new u: ", u)
+        // console.log("new e: ", e)
         logger.info(`${emergency.id}, Unit Assigned Successfyly to Emergency`, { emergencyId, unitId: nearestUnit.id });
     
         //Creating an Assignment Record to save the Unit and assigment details
@@ -83,3 +83,5 @@ export const handler= async (input: { emergencyId: string },{ logger, state, emi
 }
 
 
+//emergency.status = assigned
+//unit.status = dispatched
