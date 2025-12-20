@@ -8,12 +8,13 @@ export const AdminDashboard:React.FC = () => {
   const [emergencies,setEmergencies] = useState<EmergencyFormData[]>([]);
   const [units,setUnits] = useState<UnitFormData[]>([]);
   const [selectedView,setSelectedView] = useState<string | null>(null);
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const fetchData = async() => {
     try {
-    const emergencyList =await axios.get('http://localhost:3000/getEmergencies');
+    const emergencyList =await axios.get(`${API_BASE_URL}/getEmergencies`);
     setEmergencies(emergencyList.data.emergencies);
-    const unitList =await axios.get('http://localhost:3000/getUnits');
+    const unitList =await axios.get(`${API_BASE_URL}/getUnits`);
     setUnits(unitList.data.units);
     } catch(err) {
       console.error("Dashboard fetch failed",err);

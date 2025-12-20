@@ -14,11 +14,13 @@ export const Emergency: React.FC = () => {
     formState: {errors,isSubmitting}
   } = useForm<EmergencyFormData>();
 
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
   const navigate = useNavigate();
   const { reset } = useForm<EmergencyFormData>();
 
   const onSubmit:SubmitHandler<EmergencyFormData> = async(data:EmergencyFormData) => {
-    const res = await axios.post("http://localhost:3000/emergency",data);
+    const res = await axios.post(`${API_BASE_URL}/emergency`,data);
 
     const id = res.data.emergencyId;
     reset(); 

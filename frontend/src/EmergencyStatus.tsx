@@ -12,13 +12,14 @@ import { LiveTrackingMap } from "./components/LiveTrackingMap";
     const [unitLoc,setUnitLoc] = useState<Location | null>(null);
     const [distance,setDistance] = useState<number>();
     const [eta, setEta] = useState<number>();
+    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
     // only for updating status 
     useEffect(() => {
       if (!id) return;
       const interval = setInterval(async () => {
         try {
-          const res = await axios.get(`http://localhost:3000/emergency/${id}/status`);
+          const res = await axios.get(`${API_BASE_URL}/emergency/${id}/status`);
           setData(res.data);
           setLoading(false);
 
