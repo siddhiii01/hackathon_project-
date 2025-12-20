@@ -17,7 +17,7 @@ export const handler =async(input: { emergencyId: string, unitId:string }, {stat
   if (!emergency || !unit) return;
 
   logger.info('Emergency active, waiting 30s to resolve...', { emergencyId, unitId });
-  await new Promise(r => setTimeout(r,30000)); // Simulating waiting for 8 second to reach hospital 
+  await new Promise(r => setTimeout(r,60000)); // Simulating waiting for 8 second to reach hospital 
   
   //Now emergency has been resolved -> New State
   emergency.status='resolved';

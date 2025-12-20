@@ -7,18 +7,23 @@ export async function SeedUnits(state: any) {
     return Math.floor(50 + Math.random() * 50); //50 - 100
   }
 
+  const baseLat = 20.2290432;
+  const baseLng = 45.0759331;
+
   //Location: 
   function randomLocation(){
     return({
-      lat: 32.87 + Math.random() * 0.1,
-      lng: 45.34 + Math.random() * 0.1
+      // lat: 32.87 + Math.random() * 0.1,
+      // lng: 45.34 + Math.random() * 0.1
+      lat: baseLat + (Math.random() - 0.5) * 0.1,
+      lng: baseLng + (Math.random() - 0.5) * 0.1
     })
   }
 
   //Now saving Units in State 
 
   //Amublance Units: 
-  for(let i=1; i<=25; i++) {
+  for(let i=1; i<=5; i++) {
     await state.set('units', `AMB_${i}`,{
       id: `AMB_${i}`,
       type: 'ambulance' as UnitType,
@@ -33,7 +38,7 @@ export async function SeedUnits(state: any) {
   }
 
   //Fire Units
-  for(let i=1;i<=23;i++) {
+  for(let i=1;i<=3;i++) {
     await state.set('units', `FIRE_${i}`,{
       id: `FIRE_${i}`,
       type: 'fire_truck' as UnitType,
@@ -48,7 +53,7 @@ export async function SeedUnits(state: any) {
   }
 
   //Police units
-  for(let i=1;i<=22;i++) {
+  for(let i=1;i<=2;i++) {
     await state.set('units', `POL_${i}`,{
       id: `POL_${i}`,
       type: 'police_car' as UnitType,

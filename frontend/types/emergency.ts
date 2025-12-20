@@ -4,7 +4,7 @@ export type EmergencyStatus = 'pending' | 'dispatched' | 'active' | 'resolved';
 
 export type UnitType = "ambulance" | "fire_truck" | "police_car";
 
-export type UnitStatus = "available" | "dispatched" | "busy" | "offline";
+export type UnitStatus = "available" | "dispatched" | "busy";
 
 export interface Location {
     lat: number,
@@ -23,7 +23,8 @@ export interface EmergencyFormData {
 export interface UnitFormData {
   id: string,
   type: UnitType,
-  status:  UnitStatus
+  status:  UnitStatus,
+  location?: Location,
 }
 
 export interface DashboardCardProps {

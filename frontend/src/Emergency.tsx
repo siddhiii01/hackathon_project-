@@ -11,7 +11,7 @@ export const Emergency: React.FC = () => {
     handleSubmit,
     setValue,
     watch,
-    formState: {errors}
+    formState: {errors,isSubmitting}
   } = useForm<EmergencyFormData>();
 
   const navigate = useNavigate();
@@ -27,6 +27,7 @@ export const Emergency: React.FC = () => {
   }
 
   const [loc,setLoc] = React.useState(false);
+  const selectedType = watch("type");
 
   function success(position:GeolocationPosition) {
     setValue("location.lat",position.coords.latitude);
@@ -60,13 +61,13 @@ export const Emergency: React.FC = () => {
               <h2 className="font-medium mt-3 mb-2">Emergency Type</  h2>
               <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
 
-                <label className="border rounded-xl p-4 cursor-pointer hover:border-blue-500 text-center">
+                <label className={`border rounded-xl p-4 cursor-pointer transition-all duration-200 hover:border-blue-500 text-center ${selectedType === 'medical'? "bg-blue-400 text-white" : ""}`}>
                   <input type="radio" value={"medical"} {...register("type",{required:true})} className="peer hidden"/>
                 Medical</label>
-                <label className="border rounded-xl p-4 cursor-pointer hover:border-blue-500 text-center">
+                <label className={`border rounded-xl p-4 cursor-pointer transition-all duration-200 hover:border-blue-500 text-center ${selectedType === 'fire'? "bg-blue-400 text-white" : ""}`}>
                   <input type="radio" value={"fire"} {...register("type",{required:true})} className="hidden"/>
                 Fire</label>
-                <label className="border rounded-xl p-4 cursor-pointer hover:border-blue-500 text-center">
+                <label className={`border rounded-xl p-4 cursor-pointer transition-all duration-200 hover:border-blue-500 text-center ${selectedType === 'police'? "bg-blue-400 text-white" : ""}`}>
                   <input type="radio" value={"police"} {...register("type",{required:true})} className="hidden"/>
                 Police</label>
 
@@ -109,7 +110,7 @@ export const Emergency: React.FC = () => {
                 </div>
               )}
 
-          <button type="submit" disabled={!loc} className="bg-blue-500 hover:bg-blue-700 mt-2 text-white font-bold py-2 px-4 border border-blue-700 rounded">Submit Emergency</button>
+          <button type="submit" disabled={isSubmitting} className="bg-blue-500 hover:bg-blue-700 mt-2 text-white font-bold py-2 px-4 border cursor-pointer border-blue-700 rounded">{isSubmitting ? "Submitting..." : "Submit"}</button>
           </div>
         </div>
 

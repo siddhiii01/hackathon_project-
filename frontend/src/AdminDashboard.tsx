@@ -10,14 +10,21 @@ export const AdminDashboard:React.FC = () => {
   const [selectedView,setSelectedView] = useState<string | null>(null); // becoz we need to render nultiple table so we shld know which one is clicked
 
   const fetchData = async() => {
+    try {
     const emergencyList =await axios.get('http://localhost:3000/getEmergencies');
     setEmergencies(emergencyList.data.emergencies);
     const unitList =await axios.get('http://localhost:3000/getUnits');
     setUnits(unitList.data.units);
+    } catch(err) {
+      console.error("Dashboard fetch failed",err);
+      
+    } 
   }
 
   useEffect(() => {
     fetchData();
+    const interval = setInterval(fetchData,3000);
+    return () => clearInterval(interval);
   },[]);
 
   const onCardClick = (view:string) => {

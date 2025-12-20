@@ -45,10 +45,19 @@ export const handler= async (input: { emergencyId: string },{ logger, state, emi
             return;
         }
 
-        
+        const speed = nearestUnit?.averageSpeedKmph;
         
         //Calculating ETA 
         const etaMinutes = Math.round((distancekm/nearestUnit.averageSpeedKmph) * 60)
+
+        console.log("ETA DEBUG", {
+        distancekm,
+        speed,
+        emergencyLocation: emergency.location,
+        unitLocation: nearestUnit?.location,
+        etaMinutes
+        });
+
         nearestUnit.status = "dispatched";
         nearestUnit.currentEmergencyId = emergency.id;
         emergency.status = "assigned";
@@ -74,7 +83,7 @@ export const handler= async (input: { emergencyId: string },{ logger, state, emi
 
         await state.set('assignments', assignment.id, assignment);
         console.log("ASSIGNMENT DETAILS: ", assignment)
-        logger.info(assignment.id, "this assigmnet saved in state")
+        logger.info(`${assignment.id} this assigmnet saved in state`)
             
         //Now unit is assigned now Dispatch the Unit
         await emit({
