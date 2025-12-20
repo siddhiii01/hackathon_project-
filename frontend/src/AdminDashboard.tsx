@@ -7,7 +7,7 @@ import { DynamicTable } from "./components/DynamicTable";
 export const AdminDashboard:React.FC = () => {
   const [emergencies,setEmergencies] = useState<EmergencyFormData[]>([]);
   const [units,setUnits] = useState<UnitFormData[]>([]);
-  const [selectedView,setSelectedView] = useState<string | null>(null); // becoz we need to render nultiple table so we shld know which one is clicked
+  const [selectedView,setSelectedView] = useState<string | null>(null);
 
   const fetchData = async() => {
     try {
@@ -35,7 +35,6 @@ export const AdminDashboard:React.FC = () => {
     <>
       <div className="min-h-screen bg-gray-50 py-6">
         <div className="max-w-8xl px-6 py-10">
-          {/* from cards i hv dfferntiate all cards which in clicked and stored it in view */}
           <DashboardCards emergencies={emergencies} units={units} selectedView={selectedView} onCardClick={onCardClick}/>  
 
           <DynamicTable emergencies={emergencies} units={units} selectedView={selectedView}/>

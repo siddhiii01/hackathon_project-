@@ -19,7 +19,7 @@ export const handler= async (input: { emergencyId: string },{ logger, state, emi
             throw new Error(`Emergency not found: ${emergencyId}`)
         }
 
-        // ✅ Check if already assigned
+        // Check if already assigned
         if (emergency.status === 'assigned' || emergency.status === 'active') {
             logger.info(`Emergency ${emergencyId} already assigned, skipping`);
             return;
@@ -50,14 +50,6 @@ export const handler= async (input: { emergencyId: string },{ logger, state, emi
         //Calculating ETA 
         const etaMinutes = Math.round((distancekm/nearestUnit.averageSpeedKmph) * 60)
 
-        console.log("ETA DEBUG", {
-        distancekm,
-        speed,
-        emergencyLocation: emergency.location,
-        unitLocation: nearestUnit?.location,
-        etaMinutes
-        });
-
         nearestUnit.status = "dispatched";
         nearestUnit.currentEmergencyId = emergency.id;
         emergency.status = "assigned";
@@ -66,8 +58,7 @@ export const handler= async (input: { emergencyId: string },{ logger, state, emi
         //Update state of Emergency and Units
         await state.set('units', nearestUnit?.id, nearestUnit)
         await state.set('emergencies', emergency.id, emergency)
-        // console.log("new u: ", u)
-        // console.log("new e: ", e)
+
         logger.info(`${emergency.id}, Unit Assigned Successfyly to Emergency`, { emergencyId, unitId: nearestUnit.id });
     
         //Creating an Assignment Record to save the Unit and assigment details

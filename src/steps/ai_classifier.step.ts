@@ -1,6 +1,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-// ✅ ADD THIS HELPER FUNCTION
+// ADD THIS HELPER FUNCTION
 const mapEmergencyTypeToUnitType = (emergencyType: string): string => {
   const typeMapping: Record<string, string> = {
     'medical': 'ambulance',
@@ -91,7 +91,7 @@ export const handler= async (
     classification = JSON.parse(jsonMatch[0]);
 
 
-    // ✅ ADD THIS VALIDATION
+    //ADD THIS VALIDATION
     if (!classification.requiredUnitType) {
       classification.requiredUnitType = mapEmergencyTypeToUnitType(
         classification.classifiedType || userProvidedType || emergency.type
@@ -139,5 +139,3 @@ export const handler= async (
 
   
 }
-
-//emergency -> classified

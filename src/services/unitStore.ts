@@ -8,7 +8,7 @@ export async function SeedUnits(state: any) {
   }
 
   const baseLat = 20.2290432;
-  const baseLng = 45.0759331;
+  const baseLng = 75.0759331;
 
   //Location: 
   function randomLocation(){
@@ -38,7 +38,7 @@ export async function SeedUnits(state: any) {
   }
 
   //Fire Units
-  for(let i=1;i<=3;i++) {
+  for(let i=1;i<=5;i++) {
     await state.set('units', `FIRE_${i}`,{
       id: `FIRE_${i}`,
       type: 'fire_truck' as UnitType,
@@ -53,7 +53,7 @@ export async function SeedUnits(state: any) {
   }
 
   //Police units
-  for(let i=1;i<=2;i++) {
+  for(let i=1;i<=5;i++) {
     await state.set('units', `POL_${i}`,{
       id: `POL_${i}`,
       type: 'police_car' as UnitType,

@@ -28,7 +28,7 @@ export const DashboardCards:React.FC<DashboardCardProps> = ({emergencies,units,s
     <div className="w-6xl items-center ml-4">
       <h2 className="font-bold mt-2">All Reports</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-3">
-          <Cards title="Total Emergencies" value={emergencies.length}/>
+          <Cards title="Total Emergencies" value={emergencies.length} onClick={() => onCardClick?.("All_Emergencies")} active={selectedView==="All_Emergencies"}/>
 
           <Cards title="Pending Emergencies" value={emergencies.filter(e => e.status==='pending').length} onClick={() => onCardClick?.("Pending_Emergency")} active={selectedView==="Pending_Emergency"} />
 

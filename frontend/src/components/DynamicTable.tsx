@@ -8,6 +8,11 @@ export const DynamicTable:React.FC<TableProps> = ({emergencies,units,selectedVie
   let tableData: any[] = [];
 
   switch (selectedView) {
+    case "All_Emergencies":
+      columns = ["Id","Type","Status","Severity"];
+      tableData = emergencies;
+      break;
+      
     case "Pending_Emergency":
       columns = ["Id","Type","Status","Severity"];
       tableData = emergencies.filter(e => e.status==="pending");

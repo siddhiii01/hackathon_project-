@@ -20,9 +20,8 @@ export const Emergency: React.FC = () => {
   const onSubmit:SubmitHandler<EmergencyFormData> = async(data:EmergencyFormData) => {
     const res = await axios.post("http://localhost:3000/emergency",data);
 
-    // user need to see the status whether they r available or not
     const id = res.data.emergencyId;
-    reset(); // to refresh input ele after submit
+    reset(); 
     navigate(`/emergency/${id}/status`);
   }
 
