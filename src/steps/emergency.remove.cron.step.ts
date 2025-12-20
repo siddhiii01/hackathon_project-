@@ -4,6 +4,7 @@ export const config = {
   type:"cron",
   name:"CleanupOldEmergencies",
   cron:"*/3 * * * *", // every 6h
+  emits: []
 }
 
 export const handler = async ({state,logger}:any) => {

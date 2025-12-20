@@ -21,6 +21,7 @@ declare module 'motia' {
     'PendingEmergencyProcessor': CronHandler<{ topic: 'unit.assigning.requested'; data: never }>
     'InitUnits': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'EmergencyCreated': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'pending_classification'; data: never }>
+    'CleanupOldEmergencies': CronHandler<never>
     'EmergencyResolving': EventHandler<never, never>
     'ai-classifier': EventHandler<never, { topic: 'unit.assigning.requested'; data: never }>
   }
