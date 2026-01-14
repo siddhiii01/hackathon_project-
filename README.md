@@ -8,7 +8,6 @@ The goal was to build **anything using Motia**, and we chose a real-world proble
 
 The system handles emergency requests like **medical, fire, and police** and processes them asynchronously.
 
----
 
 ## Why This Project
 
@@ -23,7 +22,7 @@ They need:
 
 Motia fits perfectly for this use case.
 
----
+
 
 ## What We Built
 
@@ -33,7 +32,6 @@ Motia fits perfectly for this use case.
 * Dispatch logic runs in the background
 * Cron jobs handle scheduled tasks
 
----
 
 ## How It Works (Simple Flow)
 
@@ -44,7 +42,7 @@ Motia fits perfectly for this use case.
 5. Dispatch workflow assigns responders
 6. Status is updated asynchronously
 
----
+
 
 ## Event-Driven Design
 
@@ -60,7 +58,6 @@ Example events:
 * `EmergencyDispatched`
 * `EmergencyResolved`
 
----
 
 ## Queue Processing
 
@@ -72,7 +69,7 @@ Queues are used to:
 
 This makes the system more reliable.
 
----
+
 
 ## Cron Jobs
 
@@ -82,7 +79,6 @@ Cron jobs are used for:
 * Cleanup of old data
 * Periodic background tasks
 
----
 
 ## Frontend
 
@@ -91,7 +87,6 @@ Cron jobs are used for:
 * Displays current status
 * No business logic in frontend
 
----
 
 ## Tech Stack
 
@@ -100,7 +95,6 @@ Cron jobs are used for:
 * **Cron Jobs** – Scheduled tasks
 * **React** – Frontend
 
----
 
 ## Hackathon Context
 
